@@ -2,7 +2,7 @@
 	import { deck } from '../store.js';
 	import Card from './Card.svelte';
 
-	// Function to shuffle the deck
+	// Shuffle function for randomizing the deck
 	function shuffle(array) {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -11,29 +11,24 @@
 		return array;
 	}
 
-	// Shuffle the deck and divide it into two hands
+	// Shuffle and split the deck into two hands
 	const shuffledDeck = shuffle([...deck]);
 	const player1Hand = shuffledDeck.slice(0, Math.floor(shuffledDeck.length / 2));
 	const player2Hand = shuffledDeck.slice(Math.floor(shuffledDeck.length / 2));
 
-	// Path to the back image in the static/images folder
+	// Path for the back image
 	const backImage = '/images/back.jpg';
 </script>
 
 <div class="game-board">
-	<!-- Upper row: Player 1's hand (card backs) -->
+	<!-- Player 1's hand (card backs) -->
 	<div class="card-row back-row">
 		{#each player1Hand as _, index}
-			<img
-				src={backImage}
-				alt="Card back"
-				class="card back-card"
-				style="z-index: {index}; margin-left: -35px;"
-			/>
+			<img src={backImage} alt="Card back" class="card back-card" style="--index: {index};" />
 		{/each}
 	</div>
 
-	<!-- Lower row: Player 2's hand (card fronts) -->
+	<!-- Player 2's hand (card fronts) -->
 	<div class="card-row front-row">
 		{#each player2Hand as card, index}
 			<Card
@@ -41,7 +36,7 @@
 				sex={card.sex}
 				image={card.image}
 				class="card front-card"
-				style="z-index: {index}; margin-left: -35px;"
+				style="--index: {index};"
 			/>
 		{/each}
 	</div>
@@ -57,29 +52,46 @@
 	}
 
 	.card-row {
+		position: relative;
 		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
 		width: fit-content;
+		height: 360px;
 	}
 
-	.card {
-		width: 100px;
-		height: 140px;
+	:global(.card) {
+		width: 12vw !important;
+		height: fit-content;
+		aspect-ratio: 5/7;
+		border-radius: 8px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		margin-right: -9vw;
 		transition:
 			transform 0.3s ease,
 			z-index 0.3s ease;
-		border-radius: 8px;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		/* Fan effect using CSS only */
+		//transform: rotate(calc(var(--index) * 1deg)) translateX(calc(var(--index) * -10px));
+		z-index: calc(var(--index) + 1);
+		transform: rotate(3deg);
+		&:hover {
+			transform: scale(1.1) !important;
+		}
+		&:focus-within ~ &,
+		&:hover ~ & {
+			transform: translateX(130px) rotate(3deg);
+			//margin-right: 1vw;
+		}
 	}
 
-	/* Increase scale and z-index on hover for emphasis */
+	/* Hover effect to bring the card forward */
 	.card:hover {
-		transform: scale(1.1);
-		z-index: 100;
+		//transform: scale(1.1) !important;
+		//z-index: 100;
 	}
-
+	.back-row {
+		.card {
+			transform: rotate(-3deg);
+		}
+	}
 	.back-card {
 		background-color: #ccc;
 		cursor: pointer;
