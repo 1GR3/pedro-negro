@@ -13,11 +13,19 @@
 	console.log('App component is rendering');
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<main>
+	{#if !gameStarted}
+		<PlayerSelection on:start={handleStart} />
+	{:else}
+		<GameBoard {playerCount} />
+	{/if}
+</main>
 
-{#if !gameStarted}
-	<PlayerSelection on:start={handleStart} />
-{:else}
-	<GameBoard {playerCount} />
-{/if}
+<style lang="scss">
+	main {
+		background-image: url('/images/board.jpg');
+		background-color: burlywood;
+		width: 100% !important;
+		height: 100vh;
+	}
+</style>
