@@ -7,6 +7,7 @@ export const player4Hand = writable([]);
 export const player5Hand = writable([]);
 export const player6Hand = writable([]);
 
+export const currentPlayer = writable(0);
 export const deck = [
     // Pair 1: Goth
     { name: "Goth", sex: "f", image: "images/goth-f.jpg" },
